@@ -857,7 +857,7 @@ Thank you for your support!`,
 
     if (result.response === 1) {
       // 打开GitHub
-      shell.openExternal('https://github.com/abduwali/codetime');
+      shell.openExternal('https://github.com/abnb0208/CodeTime');
     } else if (result.response === 2) {
       // 检查更新
       try {
