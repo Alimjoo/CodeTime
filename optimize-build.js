@@ -9,30 +9,30 @@ module.exports = async function(context) {
 
 // 也支持直接调用
 if (require.main === module) {
-  const buildDir = path.join(__dirname, 'dist', 'win-unpacked');
+const buildDir = path.join(__dirname, 'dist', 'win-unpacked');
   optimizeBuild(buildDir);
 }
 
 async function optimizeBuild(buildDir) {
   console.log('开始深度优化构建包...');
   
-  const localesDir = path.join(buildDir, 'locales');
+const localesDir = path.join(buildDir, 'locales');
 
   // 删除除中文和英文外的所有语言包
-  if (fs.existsSync(localesDir)) {
-    const files = fs.readdirSync(localesDir);
-    files.forEach(file => {
-      if (!file.includes('zh-CN') && !file.includes('en-US')) {
-        const filePath = path.join(localesDir, file);
-        try {
-          fs.unlinkSync(filePath);
-          console.log(`删除语言包: ${file}`);
-        } catch (err) {
-          console.log(`无法删除: ${file}`);
-        }
+if (fs.existsSync(localesDir)) {
+  const files = fs.readdirSync(localesDir);
+  files.forEach(file => {
+    if (!file.includes('zh-CN') && !file.includes('en-US')) {
+      const filePath = path.join(localesDir, file);
+      try {
+        fs.unlinkSync(filePath);
+        console.log(`删除语言包: ${file}`);
+      } catch (err) {
+        console.log(`无法删除: ${file}`);
       }
-    });
-  }
+    }
+  });
+}
 
 // 删除大型不必要的文件
 const filesToDelete = [
@@ -86,15 +86,15 @@ conservativeDelete.forEach(fileName => {
 const optimizedFlag = path.join(buildDir, 'OPTIMIZED');
 fs.writeFileSync(optimizedFlag, `Optimized at ${new Date().toISOString()}\nSaved: ${(totalSaved / (1024 * 1024)).toFixed(2)}MB`);
 
-  console.log(`总共节省空间: ${(totalSaved / (1024 * 1024)).toFixed(2)}MB`);
-  console.log('保守优化完成！应用应该能正常运行。');
+console.log(`总共节省空间: ${(totalSaved / (1024 * 1024)).toFixed(2)}MB`);
+console.log('保守优化完成！应用应该能正常运行。');
 
-  // 显示最终构建大小
-  try {
-    const finalSize = getFolderSize(buildDir);
-    console.log(`优化后应用大小: ${(finalSize / (1024 * 1024)).toFixed(2)}MB`);
-  } catch (err) {
-    console.log('无法计算最终大小');
+// 显示最终构建大小
+try {
+  const finalSize = getFolderSize(buildDir);
+  console.log(`优化后应用大小: ${(finalSize / (1024 * 1024)).toFixed(2)}MB`);
+} catch (err) {
+  console.log('无法计算最终大小');
   }
 }
 
@@ -115,4 +115,4 @@ function getFolderSize(folderPath) {
   
   calculateSize(folderPath);
   return totalSize;
-}
+} 

@@ -4,9 +4,10 @@ const { ipcRenderer } = require('electron');
 const i18n = {
     'zh-CN': {
         title: 'CodeTime',
-        dailyGoal: '每日目标',
+        dailyGoal: '今日目标',
         incomeStats: '收入统计',
-        projectManagement: '项目管理',
+        projectManagement: '今日项目',
+        historyProjects: '历史项目',
         activeProjects: '进行中的项目',
         todayIncome: '今日收入',
         monthIncome: '本月收入',
@@ -30,6 +31,7 @@ const i18n = {
         description: '描述',
         relatedProject: '关联项目',
         save: '保存',
+        record: '记录',
         cancel: '取消',
         delete: '删除',
         confirm: '确定',
@@ -88,6 +90,16 @@ const i18n = {
         breakingUpdate: '重大更新',
         downloadNow: '是否现在下载？',
         unknownError: '未知错误',
+        deleteProject: '删除项目',
+        deleteProjectConfirm: '确定要删除项目 "{projectName}" 吗？',
+        deleteProjectWithIncome: '此项目产生了 {amount} 的收入，是否从总收入中减去？',
+        removeFromIncome: '从收入中减去',
+        keepIncome: '保留收入',
+        projectDeleted: '项目已删除',
+        noHistoryProjects: '暂无历史项目',
+        completedAt: '完成时间',
+        sessions: '工作会话',
+        sessionCount: '{count} 次会话',
         // 关于信息
         aboutContent: 'CodeTime v1.0.0\n一款针对程序员而做的时间和金钱规划助手\n\n开发: 上海万来云边科技服务有限公司\n网站: @WalleyX.com\n版权: © 2025 万来云边科技\n\n感谢程序员朋友们的支持！',
         // 更新检查
@@ -109,13 +121,24 @@ const i18n = {
         times: '次',
         createdTime: '创建时间',
         deleteProject: '删除项目',
-        confirmDeleteProject: '确定要删除项目 "{projectName}" 吗？此操作不可恢复！'
+        confirmDeleteProject: '确定要删除项目 "{projectName}" 吗？此操作不可恢复！',
+        // 项目管理相关翻译
+        totalTimeLabel: '总时间',
+        actualTimeLabel: '实际时间',
+        runningTime: '运行时间',
+        paused: '已暂停',
+        startProject: '开始项目',
+        pauseProject: '暂停项目',
+        completeProject: '完成项目',
+        pauseAction: '暂停',
+        completeAction: '完成'
     },
     'en-US': {
         title: 'CodeTime',
-        dailyGoal: 'Daily Goal',
+        dailyGoal: 'Today Goal',
         incomeStats: 'Income Statistics',
-        projectManagement: 'Project Management',
+        projectManagement: 'Today Projects',
+        historyProjects: 'History Projects',
         activeProjects: 'Active Projects',
         todayIncome: 'Today Income',
         monthIncome: 'Month Income',
@@ -139,6 +162,7 @@ const i18n = {
         description: 'Description',
         relatedProject: 'Related Project',
         save: 'Save',
+        record: 'Record',
         cancel: 'Cancel',
         delete: 'Delete',
         confirm: 'Confirm',
@@ -197,6 +221,16 @@ const i18n = {
         breakingUpdate: 'Breaking Update',
         downloadNow: 'Download now?',
         unknownError: 'Unknown error',
+        deleteProject: 'Delete Project',
+        deleteProjectConfirm: 'Are you sure you want to delete project "{projectName}"?',
+        deleteProjectWithIncome: 'This project generated {amount} in income. Remove from total income?',
+        removeFromIncome: 'Remove from Income',
+        keepIncome: 'Keep Income',
+        projectDeleted: 'Project Deleted',
+        noHistoryProjects: 'No history projects',
+        completedAt: 'Completed At',
+        sessions: 'Work Sessions',
+        sessionCount: '{count} sessions',
         // 关于信息
         aboutContent: 'CodeTime v1.0.0\nA time and money planning assistant for programmers\n\nDeveloper: Shanghai Wanlai Yunbian Technology Service Co., Ltd.\nWebsite: @WalleyX.com\nCopyright: © 2025 Wanlai Yunbian Technology\n\nThank you for your support!',
         // 更新检查
@@ -218,7 +252,17 @@ const i18n = {
         times: 'times',
         createdTime: 'Created Time',
         deleteProject: 'Delete Project',
-        confirmDeleteProject: 'Are you sure you want to delete project "{projectName}"? This action cannot be undone!'
+        confirmDeleteProject: 'Are you sure you want to delete project "{projectName}"? This action cannot be undone!',
+        // 项目管理相关翻译
+        totalTimeLabel: 'Total Time',
+        actualTimeLabel: 'Actual Time',
+        runningTime: 'Running Time',
+        paused: 'Paused',
+        startProject: 'Start Project',
+        pauseProject: 'Pause Project',
+        completeProject: 'Complete Project',
+        pauseAction: 'Pause',
+        completeAction: 'Complete'
     }
 };
 
@@ -253,6 +297,7 @@ const elements = {
     noProjects: document.getElementById('no-projects'),
     addProjectBtn: document.getElementById('add-project-btn'),
     addProjectQuickBtn: document.getElementById('add-project-quick-btn'),
+    historyProjectsBtn: document.getElementById('history-projects-btn'),
     
     // 活跃项目
     activeProjectsCard: document.getElementById('active-projects-card'),
@@ -301,6 +346,18 @@ const elements = {
     projectDetailCloseBtn2: document.getElementById('project-detail-close-btn2'),
     deleteProjectBtn: document.getElementById('delete-project-btn'),
     
+    // 历史项目弹窗
+    historyProjectsModal: document.getElementById('history-projects-modal'),
+    historyProjectsList: document.getElementById('history-projects-list'),
+    historyModalCloseBtn: document.getElementById('history-modal-close-btn'),
+    historyModalCloseBtn2: document.getElementById('history-modal-close-btn2'),
+    
+    // 收入确认弹窗
+    incomeConfirmModal: document.getElementById('income-confirm-modal'),
+    incomeConfirmMessage: document.getElementById('income-confirm-message'),
+    keepIncomeBtn: document.getElementById('keep-income-btn'),
+    removeIncomeBtn: document.getElementById('remove-income-btn'),
+    
     // 确认删除弹窗
     confirmModal: document.getElementById('confirm-modal'),
     confirmTitle: document.getElementById('confirm-title'),
@@ -336,8 +393,12 @@ async function initApp() {
         updateUI();
         setupEventListeners();
         
-        // 每秒更新一次UI（用于实时更新计时器）
-        setInterval(updateUI, 1000);
+        // 每秒更新一次项目列表（用于实时更新计时器）
+        setInterval(() => {
+            if (appData.activeProjects && appData.activeProjects.length > 0) {
+                updateProjectsList();
+            }
+        }, 1000);
         
         console.log('CodeTime initialization completed');
     } catch (error) {
@@ -399,7 +460,10 @@ function updateIncomeStats() {
 
 // 更新项目列表
 function updateProjectsList() {
-    if (appData.projects.length === 0) {
+    // 过滤出未完成的项目
+    const todayProjects = appData.projects.filter(project => !project.isCompleted);
+    
+    if (todayProjects.length === 0) {
         elements.noProjects.style.display = 'block';
         // 移除其他动态生成的项目元素，但保留 no-projects 元素
         const dynamicElements = elements.projectsList.querySelectorAll('.project-item');
@@ -410,7 +474,7 @@ function updateProjectsList() {
     elements.noProjects.style.display = 'none';
     elements.projectsList.innerHTML = '';
     
-    appData.projects.forEach(project => {
+    todayProjects.forEach(project => {
         const projectElement = createProjectElement(project);
         elements.projectsList.appendChild(projectElement);
     });
@@ -418,24 +482,58 @@ function updateProjectsList() {
 
 // 创建项目元素
 function createProjectElement(project) {
+    const activeProject = appData.activeProjects.find(ap => ap.projectId === project.id);
+    const isActive = !!activeProject;
+    
     const div = document.createElement('div');
     div.className = 'project-item';
-    if (project.isActive) {
+    if (isActive) {
         div.classList.add('active');
     }
     
     const totalTimeStr = formatTime(project.totalTime || 0);
     const actualTimeStr = formatTime(project.actualTime || 0);
     
+    // 如果项目正在运行，计算实时时间并更新显示
+    let statusDisplay = '';
+    let currentActualTime = project.actualTime || 0;
+    let currentTotalTime = project.totalTime || 0;
+    
+    if (isActive) {
+        const currentTime = Date.now();
+        const startTime = activeProject.startTime;
+        const pausedTime = activeProject.pausedTime || 0;
+        
+        // 计算当前会话的时间
+        let sessionTotalTime, sessionActualTime;
+        
+        if (activeProject.isPaused) {
+            // 如果暂停，使用暂停时的时间
+            sessionTotalTime = (activeProject.pauseStartTime - startTime) / 1000;
+            sessionActualTime = (activeProject.pauseStartTime - startTime - pausedTime) / 1000;
+            statusDisplay = `<span class="project-status">(${t('paused')})</span>`;
+        } else {
+            // 如果运行中，使用当前时间
+            sessionTotalTime = (currentTime - startTime) / 1000;
+            sessionActualTime = (currentTime - startTime - pausedTime) / 1000;
+        }
+        
+        // 更新显示的总时间和实际时间
+        currentTotalTime += sessionTotalTime;
+        currentActualTime += Math.max(0, sessionActualTime);
+    }
+    
     div.innerHTML = `
         <div class="project-info">
-            <div class="project-name">${project.name}</div>
-            <div class="project-stats">总时间: ${totalTimeStr} | 实际时间: ${actualTimeStr}</div>
+            <div class="project-name">
+                ${project.name}
+                ${statusDisplay}
+            </div>
+            <div class="project-stats">${t('totalTimeLabel')}: ${formatTime(currentTotalTime)} | ${t('actualTimeLabel')}: ${formatTime(currentActualTime)}</div>
         </div>
         <div class="project-controls">
-            <button class="project-btn start-btn" onclick="startProject('${project.id}')" title="开始项目"></button>
-            <button class="project-btn pause-btn" onclick="pauseProject('${project.id}')" title="暂停项目"></button>
-            <button class="project-btn stop-btn" onclick="stopProject('${project.id}')" title="完成项目"></button>
+            <button class="project-btn play-pause-btn ${isActive ? 'playing' : ''}" onclick="toggleProject('${project.id}')" title="${isActive ? (activeProject && activeProject.isPaused ? t('startProject') : t('pauseAction')) : t('startProject')}"></button>
+            <button class="project-btn complete-btn" onclick="completeProject('${project.id}')" title="${t('completeAction')}"></button>
         </div>
     `;
     
@@ -451,21 +549,10 @@ function createProjectElement(project) {
 function updateActiveProjects() {
     const activeProjects = appData.activeProjects || [];
     
-    if (activeProjects.length === 0) {
+    // 隐藏单独的活跃项目区域，因为现在在主项目列表中显示计时器
+    if (elements.activeProjectsCard) {
         elements.activeProjectsCard.style.display = 'none';
-        return;
     }
-    
-    elements.activeProjectsCard.style.display = 'block';
-    elements.activeProjectsList.innerHTML = '';
-    
-    activeProjects.forEach(activeProject => {
-        const project = appData.projects.find(p => p.id === activeProject.projectId);
-        if (project) {
-            const element = createActiveProjectElement(project, activeProject);
-            elements.activeProjectsList.appendChild(element);
-        }
-    });
 }
 
 // 创建活跃项目元素
@@ -483,13 +570,13 @@ function createActiveProjectElement(project, activeProject) {
         <div class="active-project-info">
             <div class="active-project-name">${project.name}</div>
             <div class="active-project-time">
-                运行时间: ${formatTime(Math.max(0, totalRunningTime))} 
-                ${activeProject.isPaused ? '(已暂停)' : ''}
+                ${t('runningTime')}: ${formatTime(Math.max(0, totalRunningTime))} 
+                ${activeProject.isPaused ? `(${t('paused')})` : ''}
             </div>
         </div>
         <div class="active-project-controls">
-            <button class="project-btn pause-btn" onclick="pauseProject('${project.id}')" title="暂停"></button>
-            <button class="project-btn stop-btn" onclick="stopProject('${project.id}')" title="完成"></button>
+            <button class="project-btn pause-btn" onclick="pauseProject('${project.id}')" title="${t('pauseAction')}"></button>
+            <button class="project-btn stop-btn" onclick="stopProject('${project.id}')" title="${t('completeAction')}"></button>
         </div>
     `;
     
@@ -560,44 +647,89 @@ async function pauseProject(projectId) {
     updateUI();
 }
 
-// 停止项目
-async function stopProject(projectId) {
-    const project = appData.projects.find(p => p.id === projectId);
+// 切换项目状态 (开始/暂停)
+async function toggleProject(projectId) {
     const activeProject = appData.activeProjects.find(ap => ap.projectId === projectId);
     
-    if (!project || !activeProject) return;
-    
-    // 计算总时间和实际时间
-    const currentTime = Date.now();
-    const totalTime = (currentTime - activeProject.startTime) / 1000;
-    const actualTime = (currentTime - activeProject.startTime - activeProject.pausedTime) / 1000;
-    
-    // 更新项目数据
-    project.totalTime = (project.totalTime || 0) + totalTime;
-    project.actualTime = (project.actualTime || 0) + actualTime;
-    project.isActive = false;
-    
-    // 记录工作会话
-    if (!project.sessions) project.sessions = [];
-    project.sessions.push({
-        startTime: activeProject.startTime,
-        endTime: currentTime,
-        totalTime: totalTime,
-        actualTime: actualTime,
-        pausedTime: activeProject.pausedTime
-    });
-    
-    // 从活跃项目列表中移除
-    appData.activeProjects = appData.activeProjects.filter(ap => ap.projectId !== projectId);
+    if (activeProject) {
+        // 如果项目正在运行，切换暂停状态
+        if (activeProject.isPaused) {
+            // 恢复项目
+            const pauseDuration = Date.now() - activeProject.pauseStartTime;
+            activeProject.pausedTime += pauseDuration;
+            activeProject.isPaused = false;
+            activeProject.pauseStartTime = null;
+        } else {
+            // 暂停项目
+            activeProject.isPaused = true;
+            activeProject.pauseStartTime = Date.now();
+        }
+    } else {
+        // 开始新项目
+        await startProject(projectId);
+        return;
+    }
     
     await saveData();
     updateUI();
+}
+
+// 完成项目
+async function completeProject(projectId) {
+    const project = appData.projects.find(p => p.id === projectId);
+    const activeProject = appData.activeProjects.find(ap => ap.projectId === projectId);
     
-            showNotification(t('projectCompleted', {
+    if (!project) return;
+    
+    if (activeProject) {
+        // 计算总时间和实际时间
+        const currentTime = Date.now();
+        let finalPausedTime = activeProject.pausedTime || 0;
+        
+        // 如果项目当前是暂停状态，需要加上当前暂停时间
+        if (activeProject.isPaused && activeProject.pauseStartTime) {
+            finalPausedTime += (currentTime - activeProject.pauseStartTime);
+        }
+        
+        const totalTime = (currentTime - activeProject.startTime) / 1000;
+        const actualTime = (currentTime - activeProject.startTime - finalPausedTime) / 1000;
+        
+        // 更新项目数据
+        project.totalTime = (project.totalTime || 0) + totalTime;
+        project.actualTime = (project.actualTime || 0) + actualTime;
+        
+        // 记录工作会话
+        if (!project.sessions) project.sessions = [];
+        project.sessions.push({
+            startTime: activeProject.startTime,
+            endTime: currentTime,
+            totalTime: totalTime,
+            actualTime: actualTime,
+            pausedTime: finalPausedTime
+        });
+        
+        // 从活跃项目列表中移除
+        appData.activeProjects = appData.activeProjects.filter(ap => ap.projectId !== projectId);
+        
+        showNotification(t('projectCompleted', {
             projectName: `"${project.name}"`,
             totalTime: formatTime(totalTime),
             actualTime: formatTime(actualTime)
         }));
+    }
+    
+    // 标记为已完成并添加完成时间
+    project.isActive = false;
+    project.isCompleted = true;
+    project.completedAt = Date.now();
+    
+    await saveData();
+    updateUI();
+}
+
+// 停止项目 (保留兼容性)
+async function stopProject(projectId) {
+    await completeProject(projectId);
 }
 
 // 显示通知
@@ -606,8 +738,121 @@ function showNotification(message) {
     console.log('Notification:', message);
 }
 
+// 显示历史项目弹窗
+function showHistoryProjectsModal() {
+    updateHistoryProjectsList();
+    elements.historyProjectsModal.style.display = 'flex';
+}
+
+// 隐藏历史项目弹窗
+function hideHistoryProjectsModal() {
+    elements.historyProjectsModal.style.display = 'none';
+}
+
+// 更新历史项目列表
+function updateHistoryProjectsList() {
+    const historyProjects = appData.projects.filter(project => project.isCompleted);
+    
+    if (historyProjects.length === 0) {
+        elements.historyProjectsList.innerHTML = `
+            <div class="no-history-projects" data-i18n="noHistoryProjects">
+                ${t('noHistoryProjects')}
+            </div>
+        `;
+        return;
+    }
+    
+    // 按完成时间排序，最新的在前
+    historyProjects.sort((a, b) => b.completedAt - a.completedAt);
+    
+    elements.historyProjectsList.innerHTML = '';
+    historyProjects.forEach(project => {
+        const element = createHistoryProjectElement(project);
+        elements.historyProjectsList.appendChild(element);
+    });
+}
+
+// 创建历史项目元素
+function createHistoryProjectElement(project) {
+    const div = document.createElement('div');
+    div.className = 'history-project-item';
+    
+    const completedDate = new Date(project.completedAt).toLocaleDateString();
+    const sessionsCount = project.sessions ? project.sessions.length : 0;
+    
+    div.innerHTML = `
+        <div class="history-project-info">
+            <div class="history-project-name">${project.name}</div>
+            <div class="history-project-meta">${t('completedAt')}: ${completedDate} | ${t('sessionCount', { count: sessionsCount })}</div>
+            <div class="history-project-stats">${t('totalTimeLabel')}: ${formatTime(project.totalTime || 0)} | ${t('actualTimeLabel')}: ${formatTime(project.actualTime || 0)}</div>
+        </div>
+        <div class="history-project-controls">
+            <button class="project-btn delete-btn" onclick="deleteHistoryProject('${project.id}')" title="${t('deleteProject')}"></button>
+        </div>
+    `;
+    
+    return div;
+}
+
+// 删除历史项目
+async function deleteHistoryProject(projectId) {
+    const project = appData.projects.find(p => p.id === projectId);
+    if (!project) return;
+    
+    // 检查项目是否产生了收入
+    const projectIncome = appData.incomeRecords.filter(record => record.projectId === projectId);
+    const totalProjectIncome = projectIncome.reduce((sum, record) => sum + record.amount, 0);
+    
+    if (totalProjectIncome > 0) {
+        // 显示收入确认弹窗
+        currentDeleteProjectId = projectId;
+        currentProjectIncome = totalProjectIncome;
+        elements.incomeConfirmMessage.textContent = t('deleteProjectWithIncome', { 
+            amount: `${currentCurrency}${totalProjectIncome.toLocaleString()}` 
+        });
+        elements.incomeConfirmModal.style.display = 'flex';
+    } else {
+        // 直接显示删除确认
+        showFinalDeleteConfirm(project);
+    }
+}
+
+// 显示最终删除确认
+function showFinalDeleteConfirm(project) {
+    showConfirmModal(
+        t('deleteProject'),
+        t('deleteProjectConfirm', { projectName: project.name }),
+        () => finalDeleteProject(project.id)
+    );
+}
+
+// 最终删除项目
+async function finalDeleteProject(projectId) {
+    // 移除项目
+    appData.projects = appData.projects.filter(p => p.id !== projectId);
+    
+    // 如果需要，移除相关收入记录
+    if (shouldRemoveIncome) {
+        appData.incomeRecords = appData.incomeRecords.filter(record => record.projectId !== projectId);
+        shouldRemoveIncome = false; // 重置标志
+    }
+    
+    await saveData();
+    updateUI();
+    updateHistoryProjectsList();
+    hideConfirmModal();
+    
+    showNotification(t('projectDeleted'));
+}
+
+// 全局变量存储删除状态
+let currentDeleteProjectId = null;
+let currentProjectIncome = 0;
+let shouldRemoveIncome = false;
+
 // 更新项目选择下拉框
 function updateProjectSelect() {
+    const currentValue = elements.moneyProject.value; // 保存当前选中的值
     elements.moneyProject.innerHTML = `<option value="">${t('selectProjectOptional')}</option>`;
     appData.projects.forEach(project => {
         const option = document.createElement('option');
@@ -615,6 +860,10 @@ function updateProjectSelect() {
         option.textContent = project.name;
         elements.moneyProject.appendChild(option);
     });
+    // 恢复之前选中的值
+    if (currentValue) {
+        elements.moneyProject.value = currentValue;
+    }
 }
 
 // 设置事件监听器
@@ -641,6 +890,11 @@ function setupEventListeners() {
     elements.projectModalCancelBtn.addEventListener('click', hideAddProjectModal);
     elements.projectModalSaveBtn.addEventListener('click', saveProject);
     
+    // 历史项目
+    elements.historyProjectsBtn.addEventListener('click', showHistoryProjectsModal);
+    elements.historyModalCloseBtn.addEventListener('click', hideHistoryProjectsModal);
+    elements.historyModalCloseBtn2.addEventListener('click', hideHistoryProjectsModal);
+    
     // 项目名称输入智能提示
     elements.projectName.addEventListener('input', handleProjectNameInput);
     
@@ -660,6 +914,21 @@ function setupEventListeners() {
     elements.projectDetailCloseBtn.addEventListener('click', hideProjectDetailModal);
     elements.projectDetailCloseBtn2.addEventListener('click', hideProjectDetailModal);
     elements.deleteProjectBtn.addEventListener('click', deleteCurrentProject);
+    
+    // 收入确认对话框
+    elements.keepIncomeBtn.addEventListener('click', () => {
+        shouldRemoveIncome = false;
+        elements.incomeConfirmModal.style.display = 'none';
+        const project = appData.projects.find(p => p.id === currentDeleteProjectId);
+        if (project) showFinalDeleteConfirm(project);
+    });
+    
+    elements.removeIncomeBtn.addEventListener('click', () => {
+        shouldRemoveIncome = true;
+        elements.incomeConfirmModal.style.display = 'none';
+        const project = appData.projects.find(p => p.id === currentDeleteProjectId);
+        if (project) showFinalDeleteConfirm(project);
+    });
     
     // 确认对话框
     elements.confirmCancelBtn.addEventListener('click', hideConfirmModal);
@@ -700,7 +969,7 @@ function setupEventListeners() {
     elements.checkUpdatesBtn.addEventListener('click', checkForUpdates);
     
     // 点击模态框背景关闭
-    [elements.editGoalModal, elements.addProjectModal, elements.moneyModal, elements.recordsModal, elements.projectDetailModal, elements.confirmModal, elements.settingsModal].forEach(modal => {
+    [elements.editGoalModal, elements.addProjectModal, elements.moneyModal, elements.recordsModal, elements.projectDetailModal, elements.confirmModal, elements.settingsModal, elements.historyProjectsModal, elements.incomeConfirmModal].forEach(modal => {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
@@ -1091,7 +1360,7 @@ function updateLanguage() {
     const addProjectBtn = document.querySelector('#add-project-quick-btn');
     if (addProjectBtn) {
         addProjectBtn.textContent = t('addProject');
-    }
+        }
     
     // 更新模态框内容
     updateModalLanguage();
@@ -1162,7 +1431,7 @@ function updateModalLanguage() {
     const settingsModalTitle = document.querySelector('#settings-modal .modal-header h3');
     if (settingsModalTitle) settingsModalTitle.textContent = t('settings');
     
-    // 更新按钮文本
+    // 更新按钮文本 - 先更新通用按钮
     const saveButtons = document.querySelectorAll('.save-btn');
     saveButtons.forEach(btn => {
         if (btn.textContent.includes('保存') || btn.textContent.includes('Save')) {
@@ -1188,6 +1457,10 @@ function updateModalLanguage() {
         if (btn.textContent.includes('删除') || btn.textContent.includes('Delete')) {
             btn.textContent = t('delete');
         }
+        // 特殊处理确认按钮
+        if (btn.id === 'confirm-ok-btn') {
+            btn.textContent = t('confirm');
+        }
     });
     
     // 更新选择项目的选项
@@ -1212,7 +1485,7 @@ function updateCurrencyDisplay() {
 
 // 更新动态内容
 function updateDynamicContent() {
-    // 更新项目列表
+    // 更新项目列表 - 重新生成以应用新的翻译
     updateProjectsList();
     
     // 更新收入记录列表
@@ -1220,8 +1493,16 @@ function updateDynamicContent() {
         updateRecordsList();
     }
     
-    // 更新活跃项目列表
+    // 更新活跃项目列表 - 重新生成以应用新的翻译
     updateActiveProjects();
+    
+    // 更新项目选择下拉框
+    updateProjectSelect();
+    
+    // 强制更新项目详情模态框（如果正在显示）
+    if (elements.projectDetailModal.style.display === 'flex' && currentProject) {
+        showProjectDetail(currentProject);
+    }
 }
 
 // 更新tooltips
@@ -1340,25 +1621,25 @@ async function importData() {
                 hideSettingsModal();
                 showNotification(t('dataImportMergeSuccess'));
             } else {
-                // 询问用户是否要合并数据
+            // 询问用户是否要合并数据
                 const shouldMerge = confirm(t('confirmMergeData'));
-                
-                if (shouldMerge) {
-                    // 合并数据
-                    if (result.data.incomeRecords) {
-                        appData.incomeRecords = [...appData.incomeRecords, ...result.data.incomeRecords];
-                    }
-                    if (result.data.projects) {
-                        appData.projects = [...appData.projects, ...result.data.projects];
-                    }
-                } else {
-                    // 替换数据
-                    appData = { ...appData, ...result.data };
+            
+            if (shouldMerge) {
+                // 合并数据
+                if (result.data.incomeRecords) {
+                    appData.incomeRecords = [...appData.incomeRecords, ...result.data.incomeRecords];
                 }
-                
-                await saveData();
-                updateUI();
-                hideSettingsModal();
+                if (result.data.projects) {
+                    appData.projects = [...appData.projects, ...result.data.projects];
+                }
+            } else {
+                // 替换数据
+                appData = { ...appData, ...result.data };
+            }
+            
+            await saveData();
+            updateUI();
+            hideSettingsModal();
                 showNotification(t('dataImportSuccess'));
             }
         } else {

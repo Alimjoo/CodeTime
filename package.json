@@ -1,6 +1,6 @@
 {
   "name": "codetime",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "⏰ The Ultimate Time & Income Tracking Assistant for Developers",
   "main": "src/main.js",
   "homepage": "https://github.com/abnb0208/CodeTime",
@@ -26,7 +26,8 @@
     "dist": "npm run build",
     "pack": "electron-builder --dir",
     "clean": "rimraf dist build",
-    "release": "npm run build-all",
+    "release": "node release.js",
+    "release-manual": "npm run build-all",
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
@@ -60,7 +61,8 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^22.0.0",
-    "electron-builder": "^24.6.4"
+    "electron-builder": "^24.6.4",
+    "rimraf": "^6.0.1"
   },
   "build": {
     "appId": "com.abduwali.codetime",
@@ -101,11 +103,16 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "favicon.ico",
@@ -117,11 +124,17 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "favicon_io/android-chrome-512x512.png",
@@ -132,15 +145,21 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "favicon_io/android-chrome-512x512.png",
@@ -158,11 +177,13 @@
       "deleteAppDataOnUninstall": false,
       "perMachine": false,
       "installerIcon": "favicon.ico",
-      "uninstallerIcon": "favicon.ico",
-      "include": "build/installer.nsh"
+      "uninstallerIcon": "favicon.ico"
     },
     "asarUnpack": [],
-    "electronLanguages": ["zh-CN", "en-US"],
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
     "compression": "maximum",
     "removePackageScripts": true,
     "buildDependenciesFromSource": false,

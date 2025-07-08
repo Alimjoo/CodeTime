@@ -127,6 +127,11 @@ body {
     border-color: rgba(218, 165, 32, 0.3);
 }
 
+/* 防止项目卡片悬停时抖动 */
+.project-item:hover {
+    transform: none !important;
+}
+
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -192,6 +197,27 @@ body {
     font-weight: bold;
 }
 
+.header-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.history-btn::before {
+    content: '🕒';
+    font-size: 14px;
+}
+
+.history-btn {
+    background: linear-gradient(135deg, #87ceeb 0%, #4682b4 100%);
+    color: white;
+    border-color: #4682b4;
+}
+
+.history-btn:hover {
+    background: linear-gradient(135deg, #add8e6 0%, #87ceeb 100%);
+    transform: scale(1.05);
+}
+
 #pause-all-btn::before {
     content: '⏸';
     font-size: 12px;
@@ -206,14 +232,34 @@ body {
 
 /* 目标显示 */
 .goal-display {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .goal-amount {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 700;
     color: #8b4513;
     margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+    transform: translateX(-10px);
+}
+
+.goal-amount::before {
+    content: '';
+    width: 50px;
+    height: 50px;
+    background-image: url('./favicon.ico');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
 }
 
 .goal-description {
@@ -301,8 +347,14 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 2s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 3s infinite;
+    opacity: 0.7;
+}
+
+/* 在非活跃状态下隐藏shimmer效果 */
+.progress-container:not(:hover) .progress-fill::after {
+    opacity: 0;
 }
 
 @keyframes shimmer {
@@ -344,14 +396,16 @@ body {
 
 .project-item:hover {
     background: linear-gradient(135deg, #f8f5f0 0%, #f0ede8 100%);
-    transform: translateX(2px);
     box-shadow: 0 2px 8px rgba(218, 165, 32, 0.2);
+    border-color: rgba(218, 165, 32, 0.4);
 }
 
 .project-item.active {
-    background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
-    color: white;
-    border-color: #b8860b;
+    background: linear-gradient(135deg, #fffacd 0%, #f0e68c 100%);
+    color: #8b4513;
+    border-color: #daa520;
+    border-width: 2px;
+    box-shadow: 0 2px 12px rgba(218, 165, 32, 0.3);
 }
 
 .project-info {
@@ -363,12 +417,84 @@ body {
     font-weight: 600;
     color: inherit;
     margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.project-status {
+    font-size: 11px;
+    font-weight: 500;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 107, 107, 0.2);
 }
 
 .project-stats {
     font-size: 11px;
     color: inherit;
     opacity: 0.8;
+}
+
+/* 历史项目样式 */
+.history-projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-project-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: linear-gradient(135deg, #f8f5f0 0%, #f0ede8 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    transition: all 0.2s ease;
+}
+
+.history-project-item:hover {
+    background: linear-gradient(135deg, #f4f1ec 0%, #ebe8e3 100%);
+    border-color: rgba(218, 165, 32, 0.3);
+}
+
+.history-project-info {
+    flex: 1;
+}
+
+.history-project-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8b4513;
+    margin-bottom: 4px;
+}
+
+.history-project-meta {
+    font-size: 11px;
+    color: #a0522d;
+    margin-bottom: 2px;
+}
+
+.history-project-stats {
+    font-size: 11px;
+    color: #8b4513;
+    opacity: 0.8;
+}
+
+.history-project-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.no-history-projects {
+    text-align: center;
+    color: #a0522d;
+    font-size: 13px;
+    padding: 20px;
+    font-style: italic;
 }
 
 .project-controls {
@@ -397,16 +523,22 @@ body {
     font-size: 12px;
 }
 
-.project-btn.start-btn::before {
+.project-btn.play-pause-btn::before {
     content: '▶';
 }
 
-.project-btn.pause-btn::before {
+.project-btn.play-pause-btn.playing::before {
     content: '⏸';
 }
 
-.project-btn.stop-btn::before {
-    content: '⏹';
+.project-btn.complete-btn::before {
+    content: '✓';
+    font-weight: bold;
+}
+
+.project-btn.delete-btn::before {
+    content: '🗑';
+    font-size: 11px;
 }
 
 .project-btn:hover {
@@ -414,18 +546,46 @@ body {
     box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
 }
 
-.project-btn.start-btn:hover {
+/* 深色模式优化 */
+[data-theme="dark"] .project-item.active {
+    background: linear-gradient(135deg, #3a3a2f 0%, #4a4a3f 100%);
+    color: #f0e68c;
+    border-color: #daa520;
+}
+
+[data-theme="dark"] .project-status {
+    color: #ffa500;
+    background: rgba(255, 165, 0, 0.1);
+    border-color: rgba(255, 165, 0, 0.2);
+}
+
+[data-theme="dark"] .history-btn {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    color: #add8e6;
+    border-color: #4a5568;
+}
+
+[data-theme="dark"] .history-btn:hover {
+    background: linear-gradient(135deg, #5a6578 0%, #4a5568 100%);
+}
+
+.project-btn.play-pause-btn:hover {
     background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
     color: white;
 }
 
-.project-btn.pause-btn:hover {
+.project-btn.play-pause-btn.playing:hover {
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     color: white;
 }
 
-.project-btn.stop-btn:hover {
-    background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+.project-btn.complete-btn:hover {
+    background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+    color: white;
+}
+
+.project-btn.delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #e55353 100%);
     color: white;
 }
 

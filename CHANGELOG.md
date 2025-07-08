@@ -25,7 +25,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update check logic with proper error handling
 - Tooltip translations for interface elements
 
-## [1.0.0] - 2025-01-20
+## [1.0.2] - 2025-07-09
+
+### Added
+- 🔍 **Enhanced Version Tracking** - Professional multi-source update checking system
+- 📊 **Detailed Update Logging** - Comprehensive version comparison and error reporting
+- 🐕 **Icon System Improvements** - Enhanced asset management for UI elements
+
+### Fixed
+- 🐕 **Dog Icon Display Issue** - Fixed cute dog icon not appearing in today's goal card after app packaging
+- 🔧 **Version Check Logic** - Improved version comparison algorithm with better error handling
+- 📱 **Update Sources Configuration** - Fixed update source filtering and priority handling
+- 🎨 **UI Icon Integration** - Resolved asset path issues in packaged applications
+
+### Changed
+- 🚀 **Improved Startup Performance** - Enhanced initialization sequence with better logging
+- 📋 **Debug Information** - Added comprehensive debug output for version checking system
+- 🔄 **Error Recovery** - Better handling of failed update sources with fallback options
+
+### Technical Improvements
+- **Version Config Management** - Embedded configuration to avoid packaging issues
+- **Asset Path Resolution** - Improved relative path handling for packaged apps
+- **Debug Logging System** - Enhanced debugging capabilities for troubleshooting
+- **Update Source Validation** - Better validation and filtering of update sources
+
+## [1.0.1] - 2025-07-08
+
+### Added
+- Basic version checking functionality
+- System tray integration improvements
+
+### Fixed
+- About button crash issue
+- Data initialization problems
+
+## [1.0.0] - 2025-07-07
 
 ### Added
 - ⏰ **Core Time Tracking**

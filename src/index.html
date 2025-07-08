@@ -75,8 +75,11 @@
         <!-- 项目管理 -->
         <div class="card project-card">
             <div class="card-header">
-                <h2 data-i18n="projectManagement">项目管理</h2>
-                <button class="edit-btn" id="add-project-btn"></button>
+                <h2 data-i18n="projectManagement">今日项目</h2>
+                <div class="header-buttons">
+                    <button class="edit-btn history-btn" id="history-projects-btn" title="历史项目"></button>
+                    <button class="edit-btn" id="add-project-btn"></button>
+                </div>
             </div>
             <div class="projects-container">
                 <div class="projects-list" id="projects-list">
@@ -171,7 +174,7 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn cancel-btn" id="money-modal-cancel-btn">取消</button>
-                <button class="modal-btn save-btn" id="money-modal-save-btn">添加</button>
+                                    <button class="modal-btn save-btn" id="money-modal-save-btn" data-i18n="record">记录</button>
             </div>
         </div>
     </div>
@@ -218,6 +221,40 @@
         </div>
     </div>
 
+    <!-- 历史项目弹窗 -->
+    <div class="modal" id="history-projects-modal" style="display: none;">
+        <div class="modal-content records-modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="historyProjects">历史项目</h3>
+                <button class="modal-close" id="history-modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-projects-list" id="history-projects-list">
+                    <!-- 动态生成历史项目 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="history-modal-close-btn2">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收入确认弹窗 -->
+    <div class="modal" id="income-confirm-modal" style="display: none;">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3 data-i18n="deleteProject">删除项目</h3>
+            </div>
+            <div class="modal-body">
+                <p id="income-confirm-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" data-i18n="keepIncome" id="keep-income-btn">保留收入</button>
+                <button class="modal-btn danger-btn" data-i18n="removeFromIncome" id="remove-income-btn">从收入中减去</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 确认删除弹窗 -->
     <div class="modal" id="confirm-modal" style="display: none;">
         <div class="modal-content small-modal">
@@ -228,8 +265,8 @@
                 <p id="confirm-message" data-i18n="confirmOperationMessage">确定要执行此操作吗？</p>
             </div>
             <div class="modal-footer">
-                <button class="modal-btn cancel-btn" id="confirm-cancel-btn">取消</button>
-                <button class="modal-btn danger-btn" id="confirm-ok-btn">确定</button>
+                <button class="modal-btn cancel-btn" id="confirm-cancel-btn" data-i18n="cancel">取消</button>
+                <button class="modal-btn danger-btn" id="confirm-ok-btn" data-i18n="confirm">确定</button>
             </div>
         </div>
     </div>

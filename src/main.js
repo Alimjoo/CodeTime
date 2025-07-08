@@ -10,8 +10,53 @@ let tray;
 // 数据文件路径
 const dataPath = path.join(app.getPath('userData'), 'codetime-data.json');
 
-// 导入版本配置
-const versionConfig = require('../version-config.json');
+// 版本配置（内嵌到代码中，避免打包问题）
+const versionConfig = {
+  app: {
+    name: "CodeTime",
+    version: "1.0.4",
+    buildNumber: 2,
+    releaseDate: "2025-07-09T00:00:00Z",
+    channel: "stable"
+  },
+  updateSources: [
+    {
+      name: "primary",
+      type: "github",
+      url: "https://api.github.com/repos/abnb0208/CodeTime/releases/latest",
+      enabled: true,
+      priority: 1
+    },
+    {
+      name: "backup",
+      type: "custom", 
+      url: "https://codetime.walleyx.com/api/version/latest",
+      enabled: false,
+      priority: 2
+    },
+    {
+      name: "local_mock",
+      type: "mock",
+      enabled: true,
+      priority: 99,
+      mockData: {
+        version: "1.0.2",
+        releaseDate: "2025-07-09T00:00:00Z",
+        downloadUrl: "https://github.com/abnb0208/CodeTime/releases/tag/v1.0.3",
+        releaseNotes: "修复狗图标显示问题\\n优化版本检查系统\\n提升应用稳定性\\n完善用户界面",
+        isBreaking: false,
+        minCompatibleVersion: "1.0.0"
+      }
+    }
+  ],
+  updatePolicy: {
+    autoCheck: true,
+    checkInterval: 86400000,
+    retryAttempts: 3,
+    retryDelay: 5000,
+    timeout: 10000
+  }
+};
 
 // 应用版本信息
 const APP_VERSION = versionConfig.app.version;
@@ -493,23 +538,36 @@ function parseCSV(content) {
 class VersionChecker {
   constructor(config) {
     this.config = config;
+    console.log('📋 原始更新源配置:', config.updateSources);
     this.updateSources = config.updateSources
-      .filter(source => source.enabled)
+      .filter(source => {
+        console.log(`🔍 检查更新源 ${source.name}: enabled=${source.enabled}`);
+        return source.enabled;
+      })
       .sort((a, b) => a.priority - b.priority);
+    console.log('✅ 过滤后的更新源:', this.updateSources.map(s => `${s.name}(${s.type})`));
   }
 
   async checkForUpdates() {
     const policy = this.config.updatePolicy;
     let lastError = null;
+    let allErrors = [];
+
+    console.log(`开始版本检查 - 当前版本: ${APP_VERSION}`);
+    console.log(`可用更新源: ${this.updateSources.map(s => s.name).join(', ')}`);
 
     for (const source of this.updateSources) {
       try {
-        console.log(`尝试检查更新源: ${source.name}`);
+        console.log(`🔍 尝试检查更新源: ${source.name} (${source.type})`);
         const result = await this.checkSource(source, policy.timeout);
         
         if (result.success) {
           const updateInfo = this.processUpdateInfo(result.data, source);
-          console.log(`成功从 ${source.name} 获取版本信息`);
+          console.log(`✅ 成功从 ${source.name} 获取版本信息:`);
+          console.log(`   当前版本: ${APP_VERSION}`);
+          console.log(`   最新版本: ${updateInfo.version}`);
+          console.log(`   是否有更新: ${updateInfo.hasUpdate}`);
+          
           return {
             success: true,
             hasUpdate: updateInfo.hasUpdate,
@@ -522,16 +580,18 @@ class VersionChecker {
           };
         }
       } catch (error) {
-        console.warn(`更新源 ${source.name} 检查失败:`, error.message);
+        console.warn(`❌ 更新源 ${source.name} 检查失败:`, error.message);
+        allErrors.push(`${source.name}: ${error.message}`);
         lastError = error;
         continue;
       }
     }
 
+    console.error('🔴 所有更新源检查失败:', allErrors);
     return {
       success: false,
       hasUpdate: false,
-      error: lastError ? lastError.message : '所有更新源均不可用',
+      error: `所有更新源均不可用 (${allErrors.join('; ')})`,
       currentVersion: APP_VERSION
     };
   }
@@ -652,7 +712,13 @@ class VersionChecker {
 
   processUpdateInfo(data, source) {
     const latestVersion = data.version;
-    const hasUpdate = this.compareVersions(latestVersion, APP_VERSION) > 0;
+    const comparison = this.compareVersions(latestVersion, APP_VERSION);
+    const hasUpdate = comparison > 0;
+
+    console.log(`📊 版本比较详情:`);
+    console.log(`   远程版本: ${latestVersion}`);
+    console.log(`   本地版本: ${APP_VERSION}`);
+    console.log(`   比较结果: ${comparison} (${comparison > 0 ? '有更新' : comparison === 0 ? '相同版本' : '本地版本更新'})`);
 
     return {
       hasUpdate,
@@ -673,22 +739,39 @@ class VersionChecker {
   }
 
   compareVersions(version1, version2) {
-  const v1parts = version1.split('.').map(Number);
-  const v2parts = version2.split('.').map(Number);
-  
-  for (let i = 0; i < Math.max(v1parts.length, v2parts.length); i++) {
-    const v1part = v1parts[i] || 0;
-    const v2part = v2parts[i] || 0;
+    // 清理版本字符串，移除 'v' 前缀和其他非数字字符
+    const cleanVersion1 = version1.toString().replace(/^v/, '').replace(/[^0-9.]/g, '');
+    const cleanVersion2 = version2.toString().replace(/^v/, '').replace(/[^0-9.]/g, '');
     
-    if (v1part > v2part) return 1;
-    if (v1part < v2part) return -1;
+    const v1parts = cleanVersion1.split('.').map(num => parseInt(num) || 0);
+    const v2parts = cleanVersion2.split('.').map(num => parseInt(num) || 0);
+    
+    console.log(`🔍 版本比较: "${version1}" -> [${v1parts.join(',')}] vs "${version2}" -> [${v2parts.join(',')}]`);
+    
+    const maxLength = Math.max(v1parts.length, v2parts.length);
+    for (let i = 0; i < maxLength; i++) {
+      const v1part = v1parts[i] || 0;
+      const v2part = v2parts[i] || 0;
+      
+      if (v1part > v2part) {
+        console.log(`   第${i+1}位: ${v1part} > ${v2part}, 返回 1`);
+        return 1;
+      }
+      if (v1part < v2part) {
+        console.log(`   第${i+1}位: ${v1part} < ${v2part}, 返回 -1`);
+        return -1;
+      }
+    }
+    console.log(`   版本相同, 返回 0`);
+    return 0;
   }
-  return 0;
-}
 }
 
 // 创建版本检查器实例
+console.log('🚀 初始化版本检查器...');
+console.log('版本配置:', JSON.stringify(versionConfig, null, 2));
 const versionChecker = new VersionChecker(versionConfig);
+console.log('✅ 版本检查器创建完成，更新源数量:', versionChecker.updateSources.length);
 
 // 导出给IPC使用的检查更新函数
 async function checkForUpdates() {
