@@ -189,6 +189,9 @@ secrets.json
 !favicon.ico
 !favicon_io/
 # favicon_io/ directory is now included for README logo display
+# Keep video_img folder for README demo and screenshots
+!video_img/
+!video_img/*
 
 # Database files
 *.db
