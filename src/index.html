@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeTime</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="../favicon_io/site.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 自定义标题栏 -->
+    <div class="titlebar">
+        <div class="titlebar-drag-region">
+            <span class="app-title">CodeTime</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="titlebar-button about-btn" id="about-btn" data-tooltip="about">ℹ</button>
+            <button class="titlebar-button settings-btn" id="settings-btn" data-tooltip="settings">⚙</button>
+            <button class="titlebar-button" id="minimize-btn">−</button>
+            <button class="titlebar-button" id="close-btn">×</button>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <!-- 每日目标设置 -->
+        <div class="card goal-card">
+            <div class="card-header">
+                <h2 data-i18n="dailyGoal">每日目标</h2>
+                <button class="edit-btn" id="edit-goal-btn"></button>
+            </div>
+            <div class="goal-display">
+                <div class="goal-amount">
+                    <span id="daily-goal-amount">¥500</span>
+                </div>
+                <div class="goal-description" data-i18n="goalDescription">
+                    坚持每天达成目标，积少成多！
+                </div>
+            </div>
+        </div>
+
+        <!-- 收入统计 -->
+        <div class="card stats-card">
+            <div class="card-header">
+                <h2 data-i18n="incomeStats">收入统计</h2>
+                <button class="edit-btn" id="view-records-btn"></button>
+            </div>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-label" data-i18n="todayIncome">今日收入</div>
+                    <div class="stat-value" id="today-income">¥0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label" data-i18n="monthIncome">本月收入</div>
+                    <div class="stat-value" id="month-income">¥0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label" data-i18n="yearIncome">今年收入</div>
+                    <div class="stat-value" id="year-income">¥0</div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-text" data-i18n="todayProgress">
+                    今日进度: <span id="today-progress-text">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="today-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目管理 -->
+        <div class="card project-card">
+            <div class="card-header">
+                <h2 data-i18n="projectManagement">项目管理</h2>
+                <button class="edit-btn" id="add-project-btn"></button>
+            </div>
+            <div class="projects-container">
+                <div class="projects-list" id="projects-list">
+                    <div class="no-projects" id="no-projects" data-i18n="noProjectsMessage">
+                        还没有项目，点击右上角添加新项目
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活跃项目 -->
+        <div class="card active-projects-card" id="active-projects-card" style="display: none;">
+            <div class="card-header">
+                <h2 data-i18n="activeProjectsTitle">进行中的项目</h2>
+                <button class="edit-btn" id="pause-all-btn"></button>
+            </div>
+            <div class="active-projects-list" id="active-projects-list">
+                <!-- 动态生成活跃项目 -->
+            </div>
+        </div>
+
+        <!-- 快速操作 -->
+        <div class="quick-actions">
+            <button class="action-btn money-action" id="add-money-btn" data-i18n="recordIncome">记录收入</button>
+            <button class="action-btn project-action" id="add-project-quick-btn" data-i18n="addProject">添加项目</button>
+        </div>
+    </div>
+
+    <!-- 编辑目标弹窗 -->
+    <div class="modal" id="edit-goal-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>设置每日目标</h3>
+                <button class="modal-close" id="goal-modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="goal-amount">每日目标金额 (元)</label>
+                    <input type="number" id="goal-amount" placeholder="输入每日目标金额" min="1" step="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="goal-modal-cancel-btn">取消</button>
+                <button class="modal-btn save-btn" id="goal-modal-save-btn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加项目弹窗 -->
+    <div class="modal" id="add-project-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加新项目</h3>
+                <button class="modal-close" id="project-modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="project-name">项目名称</label>
+                    <input type="text" id="project-name" placeholder="输入项目名称">
+                    <div class="suggestions" id="project-suggestions"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="project-modal-cancel-btn">取消</button>
+                <button class="modal-btn save-btn" id="project-modal-save-btn">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收入记录弹窗 -->
+    <div class="modal" id="money-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>记录收入</h3>
+                <button class="modal-close" id="money-modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="money-amount">收入金额 (元)</label>
+                    <input type="number" id="money-amount" placeholder="输入收入金额" min="0" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="money-description">收入说明</label>
+                    <input type="text" id="money-description" placeholder="例如：项目A尾款">
+                </div>
+                <div class="input-group">
+                    <label for="money-project">关联项目</label>
+                    <select id="money-project">
+                        <option value="" data-i18n="selectProjectOptional">选择项目（可选）</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="money-modal-cancel-btn">取消</button>
+                <button class="modal-btn save-btn" id="money-modal-save-btn">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收入记录查看弹窗 -->
+    <div class="modal" id="records-modal" style="display: none;">
+        <div class="modal-content records-modal-content">
+            <div class="modal-header">
+                <h3>收入记录</h3>
+                <div class="modal-header-controls">
+                    <button class="modal-btn small-btn danger-btn" id="clear-records-btn">清空记录</button>
+                    <button class="modal-close" id="records-modal-close-btn">×</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="records-list" id="records-list">
+                    <!-- 动态生成收入记录 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="records-modal-close-btn2">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目详情弹窗 -->
+    <div class="modal" id="project-detail-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="project-detail-title">项目详情</h3>
+                <div class="modal-header-controls">
+                    <button class="modal-btn small-btn danger-btn" id="delete-project-btn">删除</button>
+                    <button class="modal-close" id="project-detail-close-btn">×</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="project-stats" id="project-stats">
+                    <!-- 动态生成项目统计 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="project-detail-close-btn2">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认删除弹窗 -->
+    <div class="modal" id="confirm-modal" style="display: none;">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3 id="confirm-title" data-i18n="confirmOperation">确认操作</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message" data-i18n="confirmOperationMessage">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="confirm-cancel-btn">取消</button>
+                <button class="modal-btn danger-btn" id="confirm-ok-btn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal" id="settings-modal" style="display: none;">
+        <div class="modal-content settings-modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="settings">设置</h3>
+                <button class="modal-close" id="settings-modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 data-i18n="interfaceSettings">界面设置</h4>
+                    <div class="setting-item">
+                        <label for="language-select">语言 / Language</label>
+                        <select id="language-select">
+                            <option value="zh-CN">中文简体</option>
+                            <option value="en-US">English</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="theme-select" data-i18n="theme">主题</label>
+                        <select id="theme-select">
+                            <option value="glassmorphism" data-i18n="glassmorphism">玻璃态（默认）</option>
+                            <option value="dark" data-i18n="darkTheme">深色主题</option>
+                            <option value="light" data-i18n="lightTheme">浅色主题</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="currency-select" data-i18n="currency">货币符号</label>
+                        <select id="currency-select">
+                            <option value="¥" data-i18n="rmb">人民币 (¥)</option>
+                            <option value="$" data-i18n="usd">美元 ($)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4 data-i18n="dataManagement">数据管理</h4>
+                    <div class="setting-item">
+                        <button class="modal-btn" id="export-json-btn" data-i18n="exportAsJSON">导出为 JSON</button>
+                        <button class="modal-btn" id="export-csv-btn" data-i18n="exportAsCSV">导出为 CSV</button>
+                        <button class="modal-btn" id="export-excel-btn" data-i18n="exportAsExcel">导出为 Excel</button>
+                    </div>
+                    <div class="setting-item">
+                        <button class="modal-btn" id="import-data-btn" data-i18n="importData">导入数据</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4 data-i18n="appSettings">应用设置</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="auto-check-updates"> <span data-i18n="autoCheckUpdates">自动检查更新</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <button class="modal-btn" id="check-updates-btn" data-i18n="checkUpdates">检查更新</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="settings-modal-close-btn2">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

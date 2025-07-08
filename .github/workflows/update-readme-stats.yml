@@ -1,0 +1,65 @@
+name: Update README Stats
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Update README with latest stats
+        uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Get repository stats
+        id: stats
+        run: |
+          # Get stars, forks, and watchers count
+          REPO_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}")
+          
+          STARS=$(echo $REPO_DATA | jq -r '.stargazers_count')
+          FORKS=$(echo $REPO_DATA | jq -r '.forks_count')
+          WATCHERS=$(echo $REPO_DATA | jq -r '.watchers_count')
+          ISSUES=$(echo $REPO_DATA | jq -r '.open_issues_count')
+          
+          echo "stars=$STARS" >> $GITHUB_OUTPUT
+          echo "forks=$FORKS" >> $GITHUB_OUTPUT
+          echo "watchers=$WATCHERS" >> $GITHUB_OUTPUT
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+          
+      - name: Create stats comment
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { stars, forks, watchers, issues } = ${{ steps.stats.outputs }};
+            
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `📊 **Repository Stats Update**
+              
+              ⭐ Stars: ${stars}
+              🍴 Forks: ${forks}
+              👀 Watchers: ${watchers}
+              🐛 Open Issues: ${issues}
+              
+              Stats updated automatically on ${new Date().toISOString()}`
+            }); 

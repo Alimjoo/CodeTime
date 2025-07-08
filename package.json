@@ -1,0 +1,179 @@
+{
+  "name": "codetime",
+  "version": "1.0.0",
+  "description": "⏰ The Ultimate Time & Income Tracking Assistant for Developers",
+  "main": "src/main.js",
+  "homepage": "https://github.com/abnb0208/CodeTime",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abnb0208/CodeTime.git"
+  },
+  "bugs": {
+    "url": "https://github.com/abnb0208/CodeTime/issues"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting configured\" && exit 0",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "build-all": "electron-builder --win --mac --linux",
+    "build-optimized": "npm run build-win && node optimize-build.js",
+    "build-portable": "electron-builder --win portable",
+    "dist": "npm run build",
+    "pack": "electron-builder --dir",
+    "clean": "rimraf dist build",
+    "release": "npm run build-all",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "time-tracking",
+    "productivity",
+    "desktop-app",
+    "electron",
+    "project-management",
+    "income-tracking",
+    "freelance",
+    "developer-tools",
+    "time-management",
+    "work-tracker",
+    "cross-platform",
+    "glassmorphism",
+    "nodejs",
+    "javascript"
+  ],
+  "author": {
+    "name": "WalleyX Technology",
+    "email": "support@walleyx.com",
+    "url": "https://walleyx.com"
+  },
+  "contributors": [
+    {
+      "name": "Abduwali",
+      "email": "abduwali@walleyx.com",
+      "url": "https://github.com/abnb0208"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^22.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.abduwali.codetime",
+    "productName": "CodeTime",
+    "copyright": "Copyright © 2025 Abduwali",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "favicon_io/favicon-32x32.png",
+      "favicon_io/android-chrome-512x512.png",
+      "package.json",
+      "!src/**/*.map",
+      "!**/*.md",
+      "!**/*.txt",
+      "!**/LICENSE*",
+      "!**/CHANGELOG*",
+      "!**/README*",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/spec/**",
+      "!**/demo/**",
+      "!**/example/**",
+      "!**/examples/**",
+      "!**/docs/**",
+      "!**/.git*",
+      "!**/node_modules/**",
+      "!**/yarn.lock",
+      "!**/package-lock.json",
+      "!**/CodeTime_site/**",
+      "!**/CodeTime_site_backend/**",
+      "!**/optimize-build.js",
+      "!**/build/**"
+    ],
+    "extraResources": [],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "favicon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "publisherName": "WalleyX Technology",
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "favicon_io/android-chrome-512x512.png",
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "favicon_io/android-chrome-512x512.png",
+      "category": "Office",
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CodeTime",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false,
+      "perMachine": false,
+      "installerIcon": "favicon.ico",
+      "uninstallerIcon": "favicon.ico",
+      "include": "build/installer.nsh"
+    },
+    "asarUnpack": [],
+    "electronLanguages": ["zh-CN", "en-US"],
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "buildDependenciesFromSource": false,
+    "fileAssociations": [],
+    "protocols": [],
+    "publish": {
+      "provider": "github",
+      "owner": "abnb0208",
+      "repo": "CodeTime",
+      "private": false
+    },
+    "afterPack": "./build-optimize.js"
+  }
+}
