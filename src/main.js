@@ -14,7 +14,7 @@ const dataPath = path.join(app.getPath('userData'), 'codetime-data.json');
 const versionConfig = {
   app: {
     name: "CodeTime",
-    version: "1.0.5",
+    version: "1.0.6",
     buildNumber: 2,
     releaseDate: "2025-07-09T00:00:00Z",
     channel: "stable"
