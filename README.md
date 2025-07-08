@@ -1,210 +1,157 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/abnb0208/CodeTime/main/favicon_io/android-chrome-512x512.png" alt="CodeTime Logo" width="120" height="120">
-  <h1>CodeTime</h1>
-  <p><strong>⏰ The Ultimate Time & Income Tracking Assistant for Developers</strong></p>
+  
+  # CodeTime
+  
+  **🚀 Ultimate Time Tracking & Income Management Tool for Developers**
+
+*Keywords: time tracker, productivity app, freelancer tools, developer productivity, income tracker, project management, electron app, coding timer*
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](https://github.com/abnb0208/CodeTime/releases)
   [![Downloads](https://img.shields.io/github/downloads/abnb0208/CodeTime/total)](https://github.com/abnb0208/CodeTime/releases)
   [![Version](https://img.shields.io/github/v/release/abnb0208/CodeTime)](https://github.com/abnb0208/CodeTime/releases/latest)
   [![Stars](https://img.shields.io/github/stars/abnb0208/CodeTime?style=social)](https://github.com/abnb0208/CodeTime)
+  
+  <h3>
+    <a href="README.md">English</a> | 
+    <a href="README_zh.md">🇨🇳 中文</a>
+  </h3>
+  
 </div>
 
 ---
 
-## 🚀 About CodeTime
+## 🎯 What is CodeTime?
 
-CodeTime is a beautiful, intuitive desktop application designed specifically for developers to track their project time and income efficiently. Built with modern web technologies and featuring a stunning glassmorphism UI, CodeTime helps programmers stay organized, motivated, and financially aware of their work.
+**CodeTime** is a beautiful, cross-platform desktop application that revolutionizes how developers track their **coding time**, manage **project income**, and boost **productivity**. Built with modern **Electron** technology and featuring stunning **glassmorphism UI**.
 
-### ✨ Key Features
+### ⚡ Core Features
 
-- **🎯 Project Time Tracking** - Monitor working hours across multiple projects with precision
-- **💰 Income Management** - Track earnings and set daily financial goals
-- **📊 Comprehensive Analytics** - Detailed statistics for daily, monthly, and yearly insights
-- **🌍 Multilingual Support** - Available in English and Chinese (Simplified)
-- **🎨 Beautiful UI** - Modern glassmorphism design with multiple themes
-- **💾 Data Export/Import** - Support for JSON, CSV, and Excel formats
-- **🔔 Smart Notifications** - Intelligent break reminders and goal tracking
-- **⚡ Cross-Platform** - Works seamlessly on Windows, macOS, and Linux
+- 🕒 **Real-time Project Tracking** - Precise time tracking with pause/resume functionality
+- 💰 **Income Management** - Track earnings, set daily goals, multiple currencies
+- 📊 **Analytics Dashboard** - Comprehensive statistics and productivity insights
+- 🎨 **Modern UI/UX** - Glassmorphism design with smooth animations
+- 🌐 **Multi-language** - English & Chinese support
+- 💾 **Data Export** - JSON, CSV, Excel export capabilities
+- 🔔 **Smart Notifications** - Break reminders and goal notifications
+- ⚡ **Cross-platform** - Windows, macOS, Linux support
 
 ---
 
-## 📸 Screenshots
+## 📺 Demo Video & Screenshots
 
 <div align="center">
-  <img src="screenshots/main-interface.png" alt="Main Interface" width="400">
-  <img src="screenshots/project-management.png" alt="Project Management" width="400">
+  
+  ### 🎥 Live Demo
+  
+  [![CodeTime Demo Video](https://img.shields.io/badge/▶️%20Watch%20Demo-Click%20Here-red?style=for-the-badge)](video_img/Video.mp4)
+  
+  *Watch CodeTime in action - see how easy it is to track time and manage income*
+  
   <br/>
-  <img src="screenshots/income-tracking.png" alt="Income Tracking" width="400">
-  <img src="screenshots/settings.png" alt="Settings" width="400">
+  
+  ### 📸 Screenshots
+  
+  <table>
+    <tr>
+      <td align="center">
+        <img src="video_img/EN.png" alt="English Interface" width="400"><br/>
+        <b>English Interface</b>
+      </td>
+      <td align="center">
+        <img src="video_img/CH.png" alt="Chinese Interface" width="400"><br/>
+        <b>中文界面</b>
+      </td>
+    </tr>
+  </table>
+  
 </div>
 
 ---
 
-## 🎯 Why Choose CodeTime?
+## 🚀 Quick Start
 
-### For Freelancers
-- **Accurate Billing** - Track time precisely for client invoicing
-- **Income Goals** - Set and monitor daily earning targets
-- **Project Organization** - Keep multiple client projects organized
+### 📥 Download & Install
 
-### For Development Teams
-- **Time Analytics** - Understand productivity patterns
-- **Project Insights** - Analyze time allocation across features
-- **Progress Tracking** - Monitor development velocity
+<div align="center">
+  
+  [![Download for Windows](https://img.shields.io/badge/Download-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/abnb0208/CodeTime/releases/latest)
+  [![Download for macOS](https://img.shields.io/badge/Download-macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/abnb0208/CodeTime/releases/latest)
+  [![Download for Linux](https://img.shields.io/badge/Download-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/abnb0208/CodeTime/releases/latest)
+  
+</div>
 
-### For Individual Developers
-- **Productivity Boost** - Stay motivated with clear time tracking
-- **Financial Awareness** - Understand your earning potential
-- **Work-Life Balance** - Track breaks and prevent burnout
+### ⚡ Installation Options
 
----
-
-## 📥 Installation
-
-### Download Pre-built Binaries
-
-Get the latest version for your operating system:
-
-[![Download for Windows](https://img.shields.io/badge/Download-Windows-blue?style=for-the-badge&logo=windows)](https://github.com/abnb0208/CodeTime/releases/latest/download/CodeTime-Setup.exe)
-[![Download for macOS](https://img.shields.io/badge/Download-macOS-lightgrey?style=for-the-badge&logo=apple)](https://github.com/abnb0208/CodeTime/releases/latest/download/CodeTime.dmg)
-[![Download for Linux](https://img.shields.io/badge/Download-Linux-orange?style=for-the-badge&logo=linux)](https://github.com/abnb0208/CodeTime/releases/latest/download/CodeTime.AppImage)
-
-### Package Managers
-
-#### Windows (Chocolatey)
 ```bash
+# Windows (Chocolatey)
 choco install codetime
-```
 
-#### macOS (Homebrew)
-```bash
+# macOS (Homebrew)
 brew install --cask codetime
-```
 
-#### Linux (Snap)
-```bash
+# Linux (Snap)
 sudo snap install codetime
 ```
 
----
-
-## 🛠️ Build from Source
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [Git](https://git-scm.com/)
-
-### Quick Start
+### 🛠️ Build from Source
 
 ```bash
-# Clone the repository
 git clone https://github.com/abnb0208/CodeTime.git
-
-# Navigate to the project directory
 cd CodeTime
-
-# Install dependencies
 npm install
-
-# Start the development server
-npm start
-
-# Build for production
-npm run build
-
-# Package the application
-npm run dist
+npm start          # Development
+npm run build      # Production build
+npm run dist       # Package for distribution
 ```
 
-### Development Commands
+---
 
-| Command | Description |
+## 💡 Why Developers Love CodeTime?
+
+### 🎯 For Freelancers
+- **Accurate billing** with precise time tracking
+- **Client invoicing** with detailed project reports
+- **Income goal** tracking and achievement
+
+### 👥 For Teams
+- **Project analytics** and team productivity insights
+- **Time allocation** analysis across features
+- **Performance metrics** and development velocity
+
+### 🧑‍💻 For Solo Developers
+- **Productivity boost** with gamified tracking
+- **Work-life balance** with break reminders
+- **Financial awareness** of coding value
+
+---
+
+## 🏆 Key Highlights
+
+<div align="center">
+  
+| Feature | Description |
 |---------|-------------|
-| `npm start` | Start the app in development mode |
-| `npm run dev` | Start with hot reload and dev tools |
-| `npm run build` | Build the application |
-| `npm run dist` | Package for distribution |
-| `npm test` | Run tests |
-| `npm run lint` | Run code linting |
+| ⚡ **Lightning Fast** | Electron-based with optimized performance |
+| 🎨 **Beautiful Design** | Modern glassmorphism UI that developers love |
+| 📊 **Smart Analytics** | AI-powered insights and productivity metrics |
+| 🔒 **Privacy First** | Local data storage, no cloud dependency |
+| 🌍 **Global Ready** | Multi-language and multi-currency support |
+| 🚀 **Open Source** | MIT license, completely free forever |
 
----
-
-## 📖 Usage Guide
-
-### Getting Started
-
-1. **First Launch**: Welcome screen guides you through initial setup
-2. **Set Daily Goal**: Configure your target daily income
-3. **Create Projects**: Add your development projects
-4. **Start Tracking**: Begin timing your work sessions
-5. **Monitor Progress**: View real-time statistics and insights
-
-### Core Features
-
-#### ⏱️ Time Tracking
-- Click "▶️" to start tracking a project
-- Pause "⏸️" or stop "⏹️" as needed
-- View active sessions in real-time
-- Automatic idle detection pauses tracking
-
-#### 💰 Income Recording
-- Record project payments and earnings
-- Associate income with specific projects
-- Track multiple currencies (¥, $, €, etc.)
-- Export financial data for accounting
-
-#### 📊 Analytics Dashboard
-- **Today**: Current day progress and earnings
-- **Month**: Monthly performance overview
-- **Year**: Annual statistics and trends
-- **Projects**: Per-project time and income analysis
-
-#### 🎛️ Customization
-- **Themes**: Glassmorphism, Dark, Light modes
-- **Languages**: English, 中文简体
-- **Currencies**: Multiple currency support
-- **Notifications**: Customizable alerts and reminders
-
----
-
-## 🌐 Internationalization
-
-CodeTime supports multiple languages out of the box:
-
-- 🇺🇸 **English** - Full support
-- 🇨🇳 **中文简体** - Full support
-- 🇫🇷 **Français** - Coming soon
-- 🇩🇪 **Deutsch** - Coming soon
-- 🇯🇵 **日本語** - Coming soon
-
-Want to help translate? Check our [Translation Guide](CONTRIBUTING.md#translations).
+</div>
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! CodeTime is **100% free and open source** under the MIT License.
+CodeTime is **100% open source** and welcomes contributions!
 
-### Ways to Contribute
-
-- 🐛 **Report Bugs** - Help us identify and fix issues
-- 💡 **Suggest Features** - Share your ideas for improvements
-- 🌍 **Translations** - Help us support more languages
-- 📝 **Documentation** - Improve guides and tutorials
-- 💻 **Code** - Submit pull requests with enhancements
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests if applicable
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+- 🐛 **Bug Reports** → [Open Issue](https://github.com/abnb0208/CodeTime/issues/new?template=bug_report.md)
+- 💡 **Feature Requests** → [Suggest Feature](https://github.com/abnb0208/CodeTime/issues/new?template=feature_request.md)
+- 🌍 **Translations** → Help us support more languages
+- 💻 **Code** → Submit pull requests
 
 Read our [Contributing Guide](CONTRIBUTING.md) for detailed instructions.
 
@@ -212,74 +159,52 @@ Read our [Contributing Guide](CONTRIBUTING.md) for detailed instructions.
 
 ## 📄 License
 
-**MIT License - Free for Everyone**
-
-CodeTime is released under the [MIT License](LICENSE), which means:
-
-✅ **Commercial Use** - Use for business and profit  
-✅ **Modification** - Customize and adapt the code  
-✅ **Distribution** - Share and redistribute freely  
-✅ **Private Use** - Use for personal projects  
-✅ **Patent Grant** - Protection against patent claims  
-
-The only requirement is to include the original license notice in any copies or substantial portions of the software.
+**MIT License** - Free for personal and commercial use ✅
 
 ---
 
-## 🌟 Community & Support
+## 🌟 Show Your Support
 
-### 📞 Get Help
+If CodeTime boosts your productivity, please:
 
-- 📚 **Documentation** - Check our [Wiki](https://github.com/abnb0208/CodeTime/wiki)
-- 🐛 **Bug Reports** - [Open an Issue](https://github.com/abnb0208/CodeTime/issues/new?template=bug_report.md)
-- 💡 **Feature Requests** - [Suggest Features](https://github.com/abnb0208/CodeTime/issues/new?template=feature_request.md)
-- 💬 **Discussions** - [Community Forum](https://github.com/abnb0208/CodeTime/discussions)
-
-### 🌟 Show Your Support
-
-If CodeTime helps you be more productive, please consider:
-
-- ⭐ **Star this repository** - Help others discover the project
-- 🐦 **Share on social media** - Spread the word
-- 🗣️ **Tell your colleagues** - Recommend to other developers
-- 💖 **Sponsor the project** - Support ongoing development
-
-### 📈 Project Statistics
-
-![GitHub stars](https://img.shields.io/github/stars/abnb0208/CodeTime?style=social)
-![GitHub forks](https://img.shields.io/github/forks/abnb0208/CodeTime?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/abnb0208/CodeTime?style=social)
+- ⭐ **Star this repo** - Help others discover it
+- 🔄 **Share with friends** - Spread the word
+- 💬 **Leave feedback** - Help us improve
+- 🐛 **Report issues** - Make it better together
 
 ---
 
-## 🔗 Links
+## 🔗 Links & Community
 
-- **🌐 Website**: [codetime.walleyx.com](https://codetime.walleyx.com)
-- **📖 Documentation**: [docs.codetime.walleyx.com](https://docs.codetime.walleyx.com)
-- **📧 Contact**: support@walleyx.com
-- **🐦 Twitter**: [@CodeTimeApp](https://twitter.com/CodeTimeApp)
-
----
-
-## 🙏 Acknowledgments
-
-- **Design Inspiration** - Modern productivity apps and developer tools
-- **Icon Design** - Beautiful iconography from the design community
-- **Contributors** - All the amazing developers who help improve CodeTime
-- **Users** - The developer community that provides feedback and suggestions
+- **📖 Documentation** → [Wiki](https://github.com/abnb0208/CodeTime/wiki)
+- **💬 Discussions** → [Community Forum](https://github.com/abnb0208/CodeTime/discussions)
+- **🐛 Issues** → [Bug Reports](https://github.com/abnb0208/CodeTime/issues)
+- **📧 Contact** → support@walleyx.com
 
 ---
 
 <div align="center">
-  <p>
-    <strong>Made with ❤️ by developers, for developers</strong>
-  </p>
-  <p>
-    <a href="https://github.com/abnb0208/CodeTime/stargazers">⭐ Star</a> •
-    <a href="https://github.com/abnb0208/CodeTime/fork">🍴 Fork</a> •
-    <a href="https://github.com/abnb0208/CodeTime/issues">🐛 Report Bug</a> •
-    <a href="https://github.com/abnb0208/CodeTime/issues">💡 Request Feature</a>
-  </p>
   
-  ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=abnb0208.CodeTime)
-</div> 
+  **⭐ Star us on GitHub — it motivates us a lot!**
+  
+  [![Star History Chart](https://api.star-history.com/svg?repos=abnb0208/CodeTime&type=Date)](https://star-history.com/#abnb0208/CodeTime&Date)
+  
+  ---
+  
+  Made with ❤️ by developers, for developers
+  
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=abnb0208.CodeTime" alt="visitors">
+  
+</div>
+
+---
+
+<!-- SEO Keywords for better discoverability -->
+<!--
+time tracking app, developer productivity tools, freelancer time tracker, project time management, 
+income tracking software, productivity app for developers, coding time tracker, work hours tracker,
+electron desktop app, cross platform time tracker, project management tool, freelance billing software,
+developer tools 2025, productivity software, time management app, coding productivity, 
+programming time tracker, developer income tracker, project billing software, work time analyzer,
+glassmorphism ui design, modern desktop app, open source time tracker, free productivity tools
+--> 
