@@ -1,6 +1,6 @@
 {
   "name": "codetime",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "⏰ The Ultimate Time & Income Tracking Assistant for Developers",
   "main": "src/main.js",
   "homepage": "https://github.com/abnb0208/CodeTime",
