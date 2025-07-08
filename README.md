@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="favicon_io/android-chrome-512x512.png" alt="CodeTime Logo" width="120" height="120">
+  <img src="https://raw.githubusercontent.com/abnb0208/CodeTime/main/favicon_io/android-chrome-512x512.png" alt="CodeTime Logo" width="120" height="120">
   <h1>CodeTime</h1>
   <p><strong>⏰ The Ultimate Time & Income Tracking Assistant for Developers</strong></p>
   
