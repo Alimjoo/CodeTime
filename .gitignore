@@ -187,7 +187,8 @@ secrets.json
 *.icns
 # Keep essential images
 !favicon.ico
-# favicon_io/ - exclude this directory as requested
+!favicon_io/
+# favicon_io/ directory is now included for README logo display
 
 # Database files
 *.db
