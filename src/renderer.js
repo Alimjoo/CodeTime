@@ -385,7 +385,32 @@ const elements = {
 // 初始化应用
 async function initApp() {
     try {
+
+        
         appData = await ipcRenderer.invoke('load-data');
+        
+        // 确保 appData 有默认值
+        if (!appData) {
+            appData = {
+                dailyGoal: 500,
+                incomeRecords: [],
+                projects: [],
+                activeProjects: [],
+                settings: {}
+            };
+        }
+        
+        // 确保 dailyGoal 存在且是数字
+        if (!appData.dailyGoal || isNaN(Number(appData.dailyGoal))) {
+            appData.dailyGoal = 500;
+        }
+        
+        // 确保 incomeRecords 是数组
+        if (!Array.isArray(appData.incomeRecords)) {
+            appData.incomeRecords = [];
+        }
+        
+
         
         // 初始化设置
         initializeSettings();
@@ -424,21 +449,33 @@ function calculateIncomeStats() {
     let monthIncome = 0;
     let yearIncome = 0;
     
-    appData.incomeRecords.forEach(record => {
-        const recordDate = new Date(record.date);
-        
-        if (recordDate.toDateString() === today.toDateString()) {
-            todayIncome += record.amount;
-        }
-        
-        if (recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear) {
-            monthIncome += record.amount;
-        }
-        
-        if (recordDate.getFullYear() === currentYear) {
-            yearIncome += record.amount;
-        }
-    });
+    // 确保 incomeRecords 存在且是数组
+    if (appData.incomeRecords && Array.isArray(appData.incomeRecords)) {
+        appData.incomeRecords.forEach(record => {
+            // 确保记录有效且有日期
+            if (!record || !record.date) return;
+            
+            const recordDate = new Date(record.date);
+            const amount = Number(record.amount) || 0;
+            
+            // 检查今日收入
+            if (recordDate.toDateString() === today.toDateString()) {
+                todayIncome += amount;
+            }
+            
+            // 检查本月收入
+            if (recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear) {
+                monthIncome += amount;
+            }
+            
+            // 检查本年收入
+            if (recordDate.getFullYear() === currentYear) {
+                yearIncome += amount;
+            }
+        });
+    }
+    
+
     
     return { todayIncome, monthIncome, yearIncome };
 }
@@ -447,15 +484,28 @@ function calculateIncomeStats() {
 function updateIncomeStats() {
     const { todayIncome, monthIncome, yearIncome } = calculateIncomeStats();
     
-    elements.dailyGoalAmount.textContent = `${currentCurrency}${appData.dailyGoal.toLocaleString()}`;
-    elements.todayIncome.textContent = `${currentCurrency}${todayIncome.toLocaleString()}`;
+    const dailyGoal = Number(appData.dailyGoal) || 500;
+    const todayIncomeNum = Number(todayIncome) || 0;
+    
+    elements.dailyGoalAmount.textContent = `${currentCurrency}${dailyGoal.toLocaleString()}`;
+    elements.todayIncome.textContent = `${currentCurrency}${todayIncomeNum.toLocaleString()}`;
     elements.monthIncome.textContent = `${currentCurrency}${monthIncome.toLocaleString()}`;
     elements.yearIncome.textContent = `${currentCurrency}${yearIncome.toLocaleString()}`;
     
-    // 更新今日进度
-    const todayProgress = appData.dailyGoal > 0 ? Math.min((todayIncome / appData.dailyGoal) * 100, 100) : 0;
-    elements.todayProgressText.textContent = `${todayProgress.toFixed(1)}%`;
-    elements.todayProgress.style.width = `${todayProgress}%`;
+    let todayProgress = 0;
+    if (dailyGoal > 0) {
+        todayProgress = Math.min((todayIncomeNum / dailyGoal) * 100, 100);
+    }
+    
+    const progressElement = document.getElementById('today-progress-text');
+    const progressBar = document.getElementById('today-progress');
+    
+    if (progressElement) {
+        progressElement.textContent = `${todayProgress.toFixed(1)}%`;
+    }
+    if (progressBar) {
+        progressBar.style.width = `${todayProgress}%`;
+    }
 }
 
 // 更新项目列表
@@ -1332,11 +1382,11 @@ function updateLanguage() {
         const key = element.getAttribute('data-i18n');
         const translation = t(key);
         
-        // 特殊处理一些包含动态内容的元素
         if (key === 'todayProgress') {
             const progressSpan = element.querySelector('#today-progress-text');
             if (progressSpan) {
-                element.innerHTML = `${translation}: <span id="today-progress-text">${progressSpan.textContent}</span>`;
+                const currentText = progressSpan.textContent;
+                element.innerHTML = `${translation}: <span id="today-progress-text">${currentText}</span>`;
             } else {
                 element.textContent = translation;
             }

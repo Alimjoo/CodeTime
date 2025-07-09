@@ -193,6 +193,9 @@ secrets.json
 !video_img/
 !video_img/*
 
+# Exclude promotion materials folder
+各类平台推广文案内容/
+
 # Database files
 *.db
 *.sqlite

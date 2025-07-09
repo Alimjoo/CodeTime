@@ -21,32 +21,32 @@ const versionConfig = {
   },
   updateSources: [
     {
+      name: "local_mock",
+      type: "mock",
+      enabled: true,
+      priority: 1,
+      mockData: {
+        version: "1.0.2",
+        releaseDate: "2025-07-09T00:00:00Z",
+        downloadUrl: "https://github.com/abnb0208/CodeTime/releases/latest",
+        releaseNotes: "修复狗图标显示问题\\n优化版本检查系统\\n提升应用稳定性\\n完善用户界面",
+        isBreaking: false,
+        minCompatibleVersion: "1.0.0"
+      }
+    },
+    {
       name: "primary",
       type: "github",
       url: "https://api.github.com/repos/abnb0208/CodeTime/releases/latest",
-      enabled: true,
-      priority: 1
+      enabled: false, // 默认禁用，避免404错误
+      priority: 2
     },
     {
       name: "backup",
       type: "custom", 
       url: "https://codetime.walleyx.com/api/version/latest",
       enabled: false,
-      priority: 2
-    },
-    {
-      name: "local_mock",
-      type: "mock",
-      enabled: true,
-      priority: 99,
-      mockData: {
-        version: "1.0.2",
-        releaseDate: "2025-07-09T00:00:00Z",
-        downloadUrl: "https://github.com/abnb0208/CodeTime/releases/tag/v1.0.3",
-        releaseNotes: "修复狗图标显示问题\\n优化版本检查系统\\n提升应用稳定性\\n完善用户界面",
-        isBreaking: false,
-        minCompatibleVersion: "1.0.0"
-      }
+      priority: 3
     }
   ],
   updatePolicy: {
